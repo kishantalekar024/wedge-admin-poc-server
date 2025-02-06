@@ -5,35 +5,42 @@ const OnBoarding = require("../models/Onboarding");
 // GET all identity verifications with pagination and filters
 router.get("/", async (req, res) => {
   try {
-    console.log(req);
-    const { page = 1, limit = 10, status, email, ird_number } = req.query;
+    const {
+      page = 1,
+      perPage = 10,
+      sort = "id",
+      order = "ASC",
+      filter = "{}",
+    } = req.query;
+    console.log(filter);
+    // Parse the filter from JSON string to an object
+    const filterObj = JSON.parse(filter);
 
-    // Build query based on filters
-    const query = {};
-    if (status) query.status = status;
-    if (email) query.email = new RegExp(email, "i");
-    if (ird_number) query.ird_number = ird_number;
-    console.log("Query", query);
-    // Execute query with pagination
-    const identities = await OnBoarding.find(query)
-      .limit(limit * 1)
-      .skip((page - 1) * limit)
-      .sort({ createdAt: -1 });
-
-    const transformedIdentities = identities.map((item) => {
-      console.log(item._id);
-      return {
-        ...item.toObject(),
-        id: item._id,
-      };
+    console.log(
+      `Page: ${page}, PerPage: ${perPage}, Sort: ${sort}, Order: ${order}`
+    );
+    Object.keys(filterObj).forEach((key) => {
+      console.log(`${key}: ${filterObj[key]}`);
     });
+
+    // Execute query with pagination
+    const identities = await OnBoarding.find(filterObj)
+      .sort({ [sort]: order.toLowerCase() })
+      .skip((page - 1) * perPage)
+      .limit(Number(perPage));
+
+    const transformedIdentities = identities.map((item) => ({
+      ...item.toObject(),
+      id: item._id,
+    }));
+
     // Get total documents
-    const total = await OnBoarding.countDocuments(query);
+    const total = await OnBoarding.countDocuments(filterObj);
+    console.log("total", total);
 
     res.json({
       data: transformedIdentities,
-      totalPages: Math.ceil(total / limit),
-      currentPage: page,
+      totalPages: Math.ceil(total / perPage),
       total,
     });
   } catch (error) {
@@ -54,7 +61,6 @@ router.get("/:id", async (req, res) => {
         .status(404)
         .json({ message: "Identity verification not found" });
     }
-    console.log(identity);
     res.json({ data: { ...identity.toObject(), id: req.params.id } });
   } catch (error) {
     res.status(500).json({

@@ -6,7 +6,7 @@ const idvSchema = new Schema(
   {
     status: {
       type: String,
-      enum: ["PENDING", "COMPLETED", "FAILED"],
+      enum: ["PENDING", "COMPLETED", "FAILED", "IN_PROGRESS"],
       required: true,
     },
     first_name: {
@@ -34,7 +34,13 @@ const idvSchema = new Schema(
     },
     failureCode: {
       type: String,
-      enum: ["EXPIRED_DOC", "BLURRY_IMAGE", "INCOMPLETE_DATA", null],
+      enum: [
+        "EXPIRED_DOC",
+        "BLURRY_IMAGE",
+        "INCOMPLETE_DATA",
+        "ADDRESS_INVALID",
+        "",
+      ],
     },
     manualNotes: String,
     isManualOverridden: {
@@ -65,7 +71,13 @@ const onboardingSchema = new Schema(
     },
     status: {
       type: String,
-      enum: ["REJECTED", "FAILED", "COMPLETED", "MANUAL_IDV_REQUESTED"],
+      enum: [
+        "REJECTED",
+        "FAILED",
+        "COMPLETED",
+        "MANUAL_IDV_REQUESTED",
+        "IN_PROGRESS",
+      ],
       required: true,
     },
     intended_transaction_count: {
@@ -84,7 +96,7 @@ const onboardingSchema = new Schema(
     },
     failureReason: {
       type: String,
-      enum: ["FACE_MISMATCH", "DOCUMENT_EXPIRED", null],
+      enum: ["FACE_MISMATCH", "DOCUMENT_EXPIRED", "ADDRESS_INVALID", ""],
     },
     manualNotes: String,
     isManualOverridden: {

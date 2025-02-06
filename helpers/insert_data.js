@@ -7,10 +7,7 @@ const uri =
   "mongodb+srv://test:huZUUlNf7ZKgo4sH@cluster0.0te3dg9.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0";
 
 // Connect to MongoDB
-mongoose.connect(uri, {
-  useNewUrlParser: true,
-  useUnifiedTopology: true,
-});
+mongoose.connect(uri);
 
 // Connection error handling
 mongoose.connection.on("error", (err) => {
@@ -23,14 +20,14 @@ function prepareData(data) {
   return data.map((record) => {
     // Convert 'null' strings to actual null values
     if (record.failureReason === "null") {
-      record.failureReason = null;
+      record.failureReason = "";
     }
 
     // Clean IDVs
     if (record.idvs) {
       record.idvs = record.idvs.map((idv) => {
         if (idv.failureCode === "null") {
-          idv.failureCode = null;
+          idv.failureCode = "";
         }
         return idv;
       });
@@ -54,11 +51,10 @@ async function insertData() {
     console.log(`Processing ${records.length} records...`);
 
     // Insert data
-    const result = await OnBoarding.insertMany(records, {
-      ordered: false, // Continues insertion even if some documents fail
+    const result = await OnBoarding.insertMany(prepareData(records), {
+      ordered: true, // Continues insertion even if some documents fail
     });
     console.log(`Successfully imported ${result.length} records`);
-    return result;
     return result;
   } catch (error) {
     if (error.code === 11000) {

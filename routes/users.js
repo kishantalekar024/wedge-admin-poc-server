@@ -6,7 +6,6 @@ const User = require("../models/User"); // Make sure to adjust the path to your 
 router.get("/", async (req, res) => {
   try {
     const { _start = 0, _end = 10, _sort = "id", _order = "ASC" } = req.query;
-
     const totalCount = await User.countDocuments();
 
     const users = await User.find()
