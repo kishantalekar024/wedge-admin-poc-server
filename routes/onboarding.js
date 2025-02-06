@@ -12,18 +12,14 @@ router.get("/", async (req, res) => {
       order = "ASC",
       filter = "{}",
     } = req.query;
-    console.log(filter);
-    // Parse the filter from JSON string to an object
     const filterObj = JSON.parse(filter);
 
-    console.log(
-      `Page: ${page}, PerPage: ${perPage}, Sort: ${sort}, Order: ${order}`
-    );
     Object.keys(filterObj).forEach((key) => {
-      console.log(`${key}: ${filterObj[key]}`);
+      if (typeof filterObj[key] === "string" && filterObj[key].trim() !== "") {
+        filterObj[key] = { $regex: filterObj[key], $options: "i" };
+      }
     });
 
-    // Execute query with pagination
     const identities = await OnBoarding.find(filterObj)
       .sort({ [sort]: order.toLowerCase() })
       .skip((page - 1) * perPage)
@@ -34,7 +30,6 @@ router.get("/", async (req, res) => {
       id: item._id,
     }));
 
-    // Get total documents
     const total = await OnBoarding.countDocuments(filterObj);
     console.log("total", total);
 

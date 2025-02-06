@@ -16,7 +16,7 @@ const morgan = require("morgan");
 app.use(morgan("dev"));
 
 // Or for more detailed logging
-app.use(morgan("combined"));
+app.use(morgan("dev"));
 // If you want to specify allowed origins:
 const corsOptions = {
   origin: "*", // Allow all origins
