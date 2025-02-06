@@ -23,7 +23,8 @@ router.get("/", async (req, res) => {
     const identities = await OnBoarding.find(filterObj)
       .sort({ [sort]: order.toLowerCase() })
       .skip((page - 1) * perPage)
-      .limit(Number(perPage));
+      .limit(Number(perPage))
+      .populate("idvs");
 
     const transformedIdentities = identities.map((item) => ({
       ...item.toObject(),

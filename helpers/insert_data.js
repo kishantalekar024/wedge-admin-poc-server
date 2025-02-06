@@ -5,7 +5,7 @@ const path = require("path");
 const IDV = require("../models/IDV");
 // MongoDB connection URI - replace with your connection string
 const uri =
-  "mongodb+srv://test:huZUUlNf7ZKgo4sH@cluster0.0te3dg9.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0";
+  "mongodb+srv://admin1:tLcDUobYqAPOFXrH@cluster0.fqpyy.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0";
 
 // Connect to MongoDB
 mongoose.connect(uri);
