@@ -1,6 +1,6 @@
 const express = require("express");
 const router = express.Router();
-const User = require("../models/user"); // Make sure to adjust the path to your User model
+const User = require("../models/User"); // Make sure to adjust the path to your User model
 
 // In routes/users.js
 router.get("/", async (req, res) => {
