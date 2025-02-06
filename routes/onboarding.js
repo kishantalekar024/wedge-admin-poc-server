@@ -31,7 +31,6 @@ router.get("/", async (req, res) => {
     }));
 
     const total = await OnBoarding.countDocuments(filterObj);
-    console.log("total", total);
 
     res.json({
       data: transformedIdentities,
@@ -50,7 +49,7 @@ router.get("/", async (req, res) => {
 // GET single identity verification by ID
 router.get("/:id", async (req, res) => {
   try {
-    const identity = await OnBoarding.findById(req.params.id);
+    const identity = await OnBoarding.findById(req.params.id).populate("idvs");
     if (!identity) {
       return res
         .status(404)
@@ -100,8 +99,7 @@ router.put("/:id", async (req, res) => {
         .status(404)
         .json({ message: "Identity verification not found" });
     }
-
-    res.json(updatedIdentity);
+    res.json({ data: updatedIdentity, id: updatedIdentity.id });
   } catch (error) {
     if (error.code === 11000) {
       res.status(400).json({
@@ -138,7 +136,7 @@ router.patch("/:id/status", async (req, res) => {
     }
 
     const updatedIdentity = await identity.save();
-    res.json(updatedIdentity);
+    res.json({ data: updatedIdentity });
   } catch (error) {
     res.status(500).json({
       message: "Error updating identity verification status",
@@ -158,7 +156,10 @@ router.delete("/:id", async (req, res) => {
         .json({ message: "Identity verification not found" });
     }
 
-    res.json({ message: "Identity verification deleted successfully" });
+    res.json({
+      data: deletedIdentity,
+      message: "Identity verification deleted successfully",
+    });
   } catch (error) {
     res.status(500).json({
       message: "Error deleting identity verification",
