@@ -43,6 +43,12 @@ router.get("/", async (req, res) => {
       const obj = item.toObject();
       obj.id = obj._id;
       delete obj._id;
+      obj.idvs = obj.idvs.map((idv) => {
+        const idvObj = idv.toObject();
+        idvObj.id = idvObj._id;
+        delete idvObj._id;
+        return idvObj;
+      });
       return obj;
     });
 
@@ -71,10 +77,16 @@ router.get("/:id", async (req, res) => {
         .status(404)
         .json({ message: "Identity verification not found" });
     }
-    res.json({
-      data: { ...identity.toObject(), id: req.params.id },
-      id: req.params.id,
+    const obj = identity.toObject();
+    obj.id = obj._id;
+    delete obj._id;
+    obj.idvs = obj.idvs.map((idv) => {
+      const idvObj = idv.toObject();
+      idvObj.id = idvObj._id;
+      delete idvObj._id;
+      return idvObj;
     });
+    res.json({ data: obj, id: req.params.id });
   } catch (error) {
     res.status(500).json({
       message: "Error fetching identity verification",
