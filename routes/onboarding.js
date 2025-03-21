@@ -26,10 +26,12 @@ router.get("/", async (req, res) => {
       .limit(Number(perPage))
       .populate("idvs");
 
-    const transformedIdentities = identities.map((item) => ({
-      ...item.toObject(),
-      id: item._id,
-    }));
+    const transformedIdentities = identities.map((item) => {
+      const obj = item.toObject();
+      obj.id = obj._id;
+      delete obj._id;
+      return obj;
+    });
 
     const total = await OnBoarding.countDocuments(filterObj);
 
