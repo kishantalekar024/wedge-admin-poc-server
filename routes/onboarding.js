@@ -44,7 +44,7 @@ router.get("/", async (req, res) => {
       obj.id = obj._id;
       delete obj._id;
       obj.idvs = obj.idvs.map((idv) => {
-        const idvObj = idv.toObject();
+        const idvObj = idv;
         idvObj.id = idvObj._id;
         delete idvObj._id;
         return idvObj;
@@ -81,7 +81,7 @@ router.get("/:id", async (req, res) => {
     obj.id = obj._id;
     delete obj._id;
     obj.idvs = obj.idvs.map((idv) => {
-      const idvObj = idv.toObject();
+      const idvObj = idv;
       idvObj.id = idvObj._id;
       delete idvObj._id;
       return idvObj;
