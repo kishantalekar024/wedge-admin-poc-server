@@ -3,6 +3,7 @@ const router = express.Router();
 const OnBoarding = require("../models/Onboarding");
 
 // GET all identity verifications with pagination and filters
+// GET all identity verifications with pagination and filters
 router.get("/", async (req, res) => {
   try {
     const {
@@ -12,8 +13,20 @@ router.get("/", async (req, res) => {
       order = "ASC",
       filter = "{}",
     } = req.query;
+
     const filterObj = JSON.parse(filter);
 
+    // Handle filtering for MongoDB ObjectId (_id)
+    if (filterObj.id) {
+      if (Array.isArray(filterObj.id)) {
+        filterObj._id = { $in: filterObj.id }; // Use $in for array of IDs
+      } else {
+        filterObj._id = filterObj.id;
+      }
+      delete filterObj.id; // Remove 'id' since MongoDB uses '_id'
+    }
+
+    // Apply regex filters for string-based fields
     Object.keys(filterObj).forEach((key) => {
       if (typeof filterObj[key] === "string" && filterObj[key].trim() !== "") {
         filterObj[key] = { $regex: filterObj[key], $options: "i" };
