@@ -58,7 +58,10 @@ router.get("/:id", async (req, res) => {
         .status(404)
         .json({ message: "Identity verification not found" });
     }
-    res.json({ data: { ...identity.toObject(), id: req.params.id } });
+    res.json({
+      data: { ...identity.toObject(), id: req.params.id },
+      id: req.params.id,
+    });
   } catch (error) {
     res.status(500).json({
       message: "Error fetching identity verification",
